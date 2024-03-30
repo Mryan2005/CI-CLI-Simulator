@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define ElementType char
 typedef struct StackNode {
 	ElementType data[255];
 	struct StackNode *next;

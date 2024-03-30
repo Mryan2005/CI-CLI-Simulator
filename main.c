@@ -1,7 +1,7 @@
+#define ElementType char
 #include "class/CLIPath.h"
 #include "class/LinkQuene.h"
 #include "class/LinkStack.h"
-#define ElementType char
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
