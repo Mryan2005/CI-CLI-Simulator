@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ElementType int
+#define ElementType char
 typedef struct LinkQueneNode {
 	ElementType data;
 	struct LinkQueneNode *next;

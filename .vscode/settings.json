@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "linkquene.h": "c",
+        "linkstack.h": "c",
+        "clipath.h": "c"
     }
 }
