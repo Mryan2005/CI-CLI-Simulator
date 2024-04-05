@@ -35,9 +35,8 @@ void treeStackPush(treeStackFather *stack, treeNode *treenode) {
 
 
 treeNode *treeStackPop(treeStackFather *stack) {
-    if(!*stack) {
-        return NULL;
-    } else {
+    if(!*stack) return NULL;
+    else {
         treeStackFatherNode *p = *stack;
         treeNode *q = p->treenode;
         (*stack) = (*stack)->next;
@@ -58,6 +57,17 @@ void clearTreeStack(treeStackFather *stack) {
 }
 
 
+void tansferStackToStack(treeStackFather *stack1, treeStackFather *stack2) {
+    treeStackFatherNode *p = *stack1, *q;
+    while(p) {
+        q = p;
+        p = p->next;
+        treeStackPush(stack2, q->treenode);
+        free(q);
+    }
+    *stack1 = NULL;
+}
+
 void addTreeNode(tree *t, linkList L) {
     treeNode *tp = *t;
     treeStackFather stack = NULL;
@@ -73,9 +83,7 @@ void addTreeNode(tree *t, linkList L) {
             lnode = lnode->next;
         } else {
             if(lnode->depth > lnodeLast->depth) {
-                for(int i = lnodeLast->depth; i < lnode->depth; i++) {
-                    treeStackPush(&stack, tp);
-                }
+                for(int i = lnodeLast->depth; i < lnode->depth; i++) treeStackPush(&stack, tp);
                 tp->child = (treeNode*)malloc(sizeof(treeNode));
                 tp = tp->child;
                 tp->data = (char*)malloc(strlen(lnode->data) + 1);
@@ -83,9 +91,7 @@ void addTreeNode(tree *t, linkList L) {
                 tp->bro = NULL;
                 tp->child = NULL;
             } else if(lnode->depth < lnodeLast->depth) {
-                for(int i = lnodeLast->depth; i > lnode->depth; i--) {
-                    tp = treeStackPop(&stack);
-                }
+                for(int i = lnodeLast->depth; i > lnode->depth; i--) tp = treeStackPop(&stack);
                 while(tp->bro) tp = tp->bro;
                 tp->bro = (treeNode*)malloc(sizeof(treeNode));
                 tp = tp->bro;
@@ -113,59 +119,49 @@ void goPath(tree *t, tree *currentPosition, treeStackFather *stack) {
     tree p = *t;
     treeStackPush(stack, p);
     p = (*t)->child;
-    for(; p->bro; p = p->bro) {
-        if(strcmp(p->data, "home") == 0) {
-            treeStackPush(stack, p);
-            p = p->child;
-            *currentPosition = p;
-            break;
-        }
+    for(; p->bro; p = p->bro) if(strcmp(p->data, "home") == 0) {
+        treeStackPush(stack, p);
+        p = p->child;
+        *currentPosition = p;
+        break;
     }
 }
 
 void gotoThePath(tree *currentPosition, tree *t, char **path, treeStackFather *stack, int pathLength) {
-    tree p = NULL;
+    tree p = NULL, lastP = NULL;
+    treeStackFather tempStack = NULL;
     if(**path == 0) {
         p = *t;
-        clearTreeStack(stack);
+        // clearTreeStack(stack);
+        tansferStackToStack(stack, &tempStack);
         treeStackPush(stack, p);
         for(int i = 1; i < pathLength; i++) {
-            for(p = p->child; p->bro; p = p->bro) {
-                if(strcmp(p->data, path[i]) == 0) {
-                    goto out1;
-                }
-            }
-            if(strcmp(p->data, path[i]) == 0) {
-                goto out1;
-            }
+            for(p = p->child; p->bro; p = p->bro) if(strcmp(p->data, path[i]) == 0) goto out1;
+            if(strcmp(p->data, path[i]) == 0) goto out1;
             printf("cd: No such directory %s\n", path[i]);
+            tansferStackToStack(&tempStack, stack);
             return;
             out1:;
         }
     } else {
         p = *currentPosition;
-        for(int i = 0; i < pathLength; i++) {
+        for(int i = 0; i < pathLength && *(path[i]); i++) {
             if(strcmp(path[i], "..") == 0) {
+                lastP = p;
                 p = treeStackPop(stack);
                 if(!p) {
                     printf("cd: You are already in the root directory\n");
+                    treeStackPush(stack, lastP);
+                    *currentPosition = lastP;
                     return;
                 }
             } else {
                 if(p->child) {
                     treeStackPush(stack, p);
                     p = p->child;
-                    if(strcmp(p->data, path[i]) == 0) {
-                        goto out;
-                    }
-                    for(; p->bro; p = p->bro) {
-                        if(strcmp(p->data, path[i]) == 0) {
-                            goto out;
-                        }
-                    }
-                    if(strcmp(p->data, path[i]) == 0) {
-                        goto out;
-                    }
+                    if(strcmp(p->data, path[i]) == 0) goto out;
+                    for(; p->bro; p = p->bro) if(strcmp(p->data, path[i]) == 0) goto out;
+                    if(strcmp(p->data, path[i]) == 0) goto out;
                     printf("cd: No such directory %s\n", path[i]);
                     return;
                     out:;

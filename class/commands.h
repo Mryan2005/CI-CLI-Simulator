@@ -15,9 +15,7 @@ void cdCommand(tree *root, tree *currentDir, treeStackFather *stack) {
             strcpy(path_[count], path);
             count++;
             pPath = path;
-        } else if(temp != 0){
-            *(pPath++) = temp;
-        }
+        } else if(temp != 0) *(pPath++) = temp;
     }
     *pPath = '\0';
     path_[count] = (char*)malloc(sizeof(char)*strlen(path)+1);
