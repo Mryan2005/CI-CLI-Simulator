@@ -53,15 +53,15 @@ void readFileLine(FILE *fp, linkList *List) {
             depth++;
         } else {
             q = p + strlen(p) - 1;
-            for(; *q == ' '; q--);
             if(*q == '{') {
                 *q = '\0';
+                for(q--; *q == ' '; q--) *q = '\0';
                 addLinkNode(List, p, depth);
                 depth++;
             } else {
+                for(q--; *q == ' '; q--) *q = '\0';
                 addLinkNode(List, p, depth);
             }
-            
         }
     }
 }

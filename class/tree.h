@@ -47,6 +47,17 @@ treeNode *treeStackPop(treeStackFather *stack) {
 }
 
 
+void clearTreeStack(treeStackFather *stack) {
+    treeStackFatherNode *p = *stack, *q;
+    while(p) {
+        q = p;
+        p = p->next;
+        free(q);
+    }
+    *stack = NULL;
+}
+
+
 void addTreeNode(tree *t, linkList L) {
     treeNode *tp = *t;
     treeStackFather stack = NULL;
@@ -113,41 +124,57 @@ void goPath(tree *t, tree *currentPosition, treeStackFather *stack) {
 }
 
 void gotoThePath(tree *currentPosition, tree *t, char **path, treeStackFather *stack, int pathLength) {
-    char **pPath = path;
     tree p = NULL;
-    if(**path == '\0') {
+    if(**path == 0) {
         p = *t;
-    } else {
-        p = *currentPosition;    
-    }
-    while(*pPath) {
-        if(strcmp(*pPath, "..") == 0) {
-            if(!*stack) {
-                printf("you are in the root directory\n");
-                break;
+        clearTreeStack(stack);
+        treeStackPush(stack, p);
+        for(int i = 1; i < pathLength; i++) {
+            for(p = p->child; p->bro; p = p->bro) {
+                if(strcmp(p->data, path[i]) == 0) {
+                    goto out1;
+                }
             }
-            p = treeStackPop(stack);
-            pPath++;
-            goto out;
-        } else {
-            for(; p && p->bro; p = p->bro) {
-                if(strcmp(p->data, *pPath) == 0) {
-                    if(pPath != pPath+pathLength-1) {
+            if(strcmp(p->data, path[i]) == 0) {
+                goto out1;
+            }
+            printf("cd: No such directory %s\n", path[i]);
+            return;
+            out1:;
+        }
+    } else {
+        p = *currentPosition;
+        for(int i = 0; i < pathLength; i++) {
+            if(strcmp(path[i], "..") == 0) {
+                p = treeStackPop(stack);
+                if(!p) {
+                    printf("cd: You are already in the root directory\n");
+                    return;
+                }
+            } else {
+                if(p->child) {
+                    treeStackPush(stack, p);
+                    p = p->child;
+                    if(strcmp(p->data, path[i]) == 0) {
                         goto out;
-                    } else {
-                        *currentPosition = p;
-                        goto out2;
                     }
+                    for(; p->bro; p = p->bro) {
+                        if(strcmp(p->data, path[i]) == 0) {
+                            goto out;
+                        }
+                    }
+                    if(strcmp(p->data, path[i]) == 0) {
+                        goto out;
+                    }
+                    printf("cd: No such directory %s\n", path[i]);
+                    return;
+                    out:;
+                } else {
+                    printf("cd: No such directory %s\n",  path[i]);
+                    return;
                 }
             }
         }
-        pPath++;
-        goto out;
-        out1:;
-        printf("I can't find %s\n", *pPath);
-        break;
-        out:;
     }
     *currentPosition = p;
-    out2:;
 }
