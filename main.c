@@ -30,6 +30,8 @@ int main() {
         scanf("%s ", command);
         if(strcmp(command, "cd") == 0) {
             cdCommand(&sysDir, &curDir, &currentDirFather);
-        }
+        } else if(strcmp(command, "wget") == 0) {
+            wgetCommand(&curDir);
+        } 
     }
 }

@@ -23,3 +23,15 @@ void cdCommand(tree *root, tree *currentDir, treeStackFather *stack) {
     path_[++count] = NULL;
     gotoThePath(currentDir, root, path_, stack, count);
 }
+
+
+void wgetCommand(tree *currentDir) {
+    char ch, *url = (char*)malloc(sizeof(char)*10000), *pUrl = url;
+    while((ch = getchar()) != '\n') *(pUrl++) = ch;
+    *pUrl = '\0';
+    for(pUrl = url+strlen(url)-1; *pUrl != '/'; pUrl--);
+    pUrl++;
+    addChildNodeInTree(currentDir, pUrl);
+    printf("Downloaded %s successfully from %s\n", pUrl, url);
+    free(url);
+}

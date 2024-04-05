@@ -115,6 +115,39 @@ void addTreeNode(tree *t, linkList L) {
 }
 
 
+void addBroNodeInTree(tree *t, char *data) {
+    treeNode *p = *t;
+    while(p->bro) p = p->bro;
+    p->bro = (treeNode*)malloc(sizeof(treeNode));
+    p = p->bro;
+    p->data = (char*)malloc(strlen(data) + 1);
+    strcpy(p->data, data);
+    p->bro = NULL;
+    p->child = NULL;
+}
+
+
+void addChildNodeInTree(tree *t, char *data) {
+    treeNode *p = *t;
+    if(p->child) {
+        p = p->child;
+        while(p->bro) p = p->bro;
+        p->bro = (treeNode*)malloc(sizeof(treeNode));
+        p = p->bro;
+        p->data = (char*)malloc(strlen(data) + 1);
+        strcpy(p->data, data);
+        p->bro = NULL;
+        p->child = NULL;
+    } else {
+        p->child = (treeNode*)malloc(sizeof(treeNode));
+        p = p->child;
+        p->data = (char*)malloc(strlen(data) + 1);
+        strcpy(p->data, data);
+        p->bro = NULL;
+        p->child = NULL;
+    }
+}
+
 void goPath(tree *t, tree *currentPosition, treeStackFather *stack) {
     tree p = *t;
     treeStackPush(stack, p);
