@@ -36,6 +36,8 @@ int main() {
             wgetCommand(&curDir);
         } else if(strcmp(command, "ls") == 0) {
             lsCommand(curDir);
-        } 
+        } else {
+            printf("%s: command not found\n", command);
+        }
     }
 }
