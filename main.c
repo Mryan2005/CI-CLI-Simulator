@@ -27,11 +27,15 @@ int main() {
     char command[256];
     while(1) {
         printf("%s > ", curDir->data);
-        scanf("%s ", command);
+        scanf("%s", command);
         if(strcmp(command, "cd") == 0) {
+            getchar();
             cdCommand(&sysDir, &curDir, &currentDirFather);
         } else if(strcmp(command, "wget") == 0) {
+            getchar();
             wgetCommand(&curDir);
+        } else if(strcmp(command, "ls") == 0) {
+            lsCommand(curDir);
         } 
     }
 }

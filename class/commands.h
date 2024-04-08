@@ -35,3 +35,35 @@ void wgetCommand(tree *currentDir) {
     printf("Downloaded %s successfully from %s\n", pUrl, url);
     free(url);
 }
+
+
+void lsCommand(tree currentDir) {
+    tree p = currentDir;
+    int relativeDepth = 0;
+    treeStackFather stack = NULL;
+    printf("%#*s", relativeDepth, "");
+    printf("%s\n", p->data);
+    p = p->child;
+    relativeDepth += 4;
+    while(p) {
+        printf("%#*s", relativeDepth, "");
+        printf("%s\n", p->data);
+        if(p->child) {
+            treeStackPush(&stack, p);
+            p = p->child;
+            relativeDepth += 4;
+        } else {
+            p = p->bro;
+            if(!p->bro) {
+                printf("%#*s", relativeDepth, "");
+                printf("%s\n", p->data);
+            } else continue;
+            while(p && !p->bro && stack) {
+                p = treeStackPop(&stack);
+                relativeDepth -= 4;
+            }
+            if(!p->bro) break;
+            else p = p->bro;
+        }
+    }
+}
