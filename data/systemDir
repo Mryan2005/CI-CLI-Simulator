@@ -1,10 +1,10 @@
-/{
+/ {
     bin
     boot
     cdrom
     dev
     etc
-    home{
+    home {
         workspace {
             1 {
                 2                

@@ -57,14 +57,16 @@ void clearTreeStack(treeStackFather *stack) {
 
 
 void tansferStackToStack(treeStackFather *stack1, treeStackFather *stack2) {
-    treeStackFatherNode *p = *stack1, *q;
-    while(p) {
-        q = p;
-        p = p->next;
-        treeStackPush(stack2, q->treenode);
-        free(q);
+    treeStackFather tempStack = NULL;
+    treeNode *q;
+    while(*stack1) {
+        q = treeStackPop(stack1);
+        treeStackPush(&tempStack, q);
     }
-    *stack1 = NULL;
+    while(tempStack) {
+        q = treeStackPop(&tempStack);
+        treeStackPush(stack2, q);
+    }
 }
 
 void addTreeNode(tree *t, linkList L) {
