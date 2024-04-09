@@ -47,9 +47,8 @@ treeNode *treeStackPop(treeStackFather *stack) {
 
 
 void clearTreeStack(treeStackFather *stack) {
-    treeStackFatherNode *p = *stack, *q;
+    treeStackFatherNode *p = *stack;
     while(p) {
-        q = p;
         p = p->next;
         free(q);
     }
